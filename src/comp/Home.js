@@ -1,36 +1,35 @@
 import React, { useEffect, useState } from "react";
 import Card from "./MovieCard";
-import ReactPaginate from "react-paginate"; // Importing the library
+import ReactPaginate from "react-paginate";
 
 const Home = ({ searchQuery }) => {
   const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1); // Store total pages
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const popurl = `https://api.themoviedb.org/3/movie/popular?api_key=c45a857c193f6302f2b5061c3b85e743&language=en-US&page=${currentPage}`;
   const searchUrl = (query, page) =>
     `https://api.themoviedb.org/3/search/movie?api_key=c45a857c193f6302f2b5061c3b85e743&language=en-US&query=${query}&page=${page}`;
 
-  // Fetch movies data
   useEffect(() => {
     const url = searchQuery ? searchUrl(searchQuery, currentPage) : popurl;
-    setLoading(true); // Start loading
+    setLoading(true);
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
         setMovies(data.results);
-        setTotalPages(data.total_pages); // Set the total pages from the API response
-        setLoading(false); // Stop loading
+        setTotalPages(data.total_pages);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching movies:", error);
-        setLoading(false); // Stop loading even on error
+        setLoading(false);
       });
-  }, [searchQuery, currentPage]); // Re-run the effect when currentPage or searchQuery changes
+  }, [searchQuery, currentPage]);
 
   const handlePageChange = (selectedPage) => {
-    setCurrentPage(selectedPage.selected + 1); // React Paginate gives 0-based index
+    setCurrentPage(selectedPage.selected + 1);
   };
 
   return (
@@ -57,15 +56,14 @@ const Home = ({ searchQuery }) => {
         )}
       </div>
 
-      {/* Pagination using React Paginate */}
       <div className="pagination">
         <ReactPaginate
-          pageCount={totalPages} 
-          pageRangeDisplayed={3} 
-          marginPagesDisplayed={1} 
-          onPageChange={handlePageChange} 
+          pageCount={totalPages}
+          pageRangeDisplayed={3}
+          marginPagesDisplayed={1}
+          onPageChange={handlePageChange}
           containerClassName="pagination-container"
-          activeClassName="active" 
+          activeClassName="active"
         />
       </div>
     </div>
